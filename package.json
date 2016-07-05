@@ -5,12 +5,7 @@
     "homepage": "https://github.com/qtbeee/tagdeletion",
     "version": "1.0.0",
     "author": "Kristy Brambila <qtbeeestmoi@gmail.com>",
-    "keywords": [
-        "tag",
-        "html",
-        ".html",
-        "remove",
-    ],
+    "keywords": ["tag", "html", ".html", "remove"],
     "engines.brackets": ">= 1.7",
     "categories": "editing"
 }
