@@ -19,34 +19,47 @@ define(function (require, exports, module) {
         var endpos = editor.getSelection().end;
         
         //time to extract what we want from what was selected
-        var starttagpat = new RegExp(".+(?=<[^/>]+>)");
-        var endtagpat = new RegExp(".+(?=<[^>]+>)");
+        var starttagpat = new RegExp("(.|\n)+?(?=<[^/>]+>)");
+        var endtagpat = new RegExp("(.|\n)+(?=<[^>]+>)");
         var beforefirsttag = "";
         
         beforefirsttag = starttagpat.exec(text);
         var firsttag = /<[^\/>]+>/.exec(text);
+        
+        //testing
+        //alert("first tag is: " + firsttag);
+        
         if (firsttag === null) { return; }
         if (beforefirsttag !== null) {
-            newtext = newtext.substring(beforefirsttag[0].length);
+            beforefirsttag = beforefirsttag[0];
+            newtext = newtext.substring(beforefirsttag.length);
         } else {
-            beforefirsttag = [""];
+            beforefirsttag = "";
         }
-        newtext = newtext.substring(firsttag[0].length);
+        firsttag = firsttag[0];
+        newtext = newtext.substring(firsttag.length);
+        
+        //more testing
+        //alert("after first change: " + newtext);
         
         var beforelasttag = endtagpat.exec(newtext);
         var lasttag = /<\/[^>]+>/.exec(newtext);
         if (lasttag === null) { return; }
-        if (beforelasttag === null) { beforelasttag = [""]; }
-        
+        lasttag = lasttag[0];
+        if (beforelasttag === null) {
+            beforelasttag = "";
+        } else {
+            beforelasttag = beforelasttag[0];
+        }
         var restoftext = "";
-        if (beforelasttag[0].length + lasttag[0].length < newtext.length) {
-            restoftext = newtext.substring(beforelasttag[0].length + lasttag[0].length);
+        if (beforelasttag.length + lasttag.length < newtext.length) {
+            restoftext = newtext.substring(beforelasttag.length + lasttag.length);
         }
         
-        //for testing!
-        //alert(beforefirsttag);
-        //alert(beforelasttag);
-        //alert(restoftext);
+        //test all the things!
+        alert("beforefirsttag: \n" + beforefirsttag);
+        alert("beforelasttag: \n" + beforelasttag);
+        alert("restoftext: \n" + restoftext);
         
         //put everything back together!
         newtext = beforefirsttag + beforelasttag + restoftext;
