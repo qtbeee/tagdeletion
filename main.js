@@ -57,9 +57,9 @@ define(function (require, exports, module) {
         }
         
         //test all the things!
-        alert("beforefirsttag: \n" + beforefirsttag);
-        alert("beforelasttag: \n" + beforelasttag);
-        alert("restoftext: \n" + restoftext);
+        //alert("beforefirsttag: \n" + beforefirsttag);
+        //alert("beforelasttag: \n" + beforelasttag);
+        //alert("restoftext: \n" + restoftext);
         
         //put everything back together!
         newtext = beforefirsttag + beforelasttag + restoftext;
