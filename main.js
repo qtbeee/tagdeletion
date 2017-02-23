@@ -12,24 +12,35 @@ define(function (require, exports, module) {
         var editor = EditorManager.getFocusedEditor();
         var text = editor.getSelectedText();
         
-        if (editor.getSelectedText() === "" || editor.getLanguageForSelection().getId() !== "html") { return; }
+        if (editor.getSelectedText() === "") {
+            alert("No text selected");
+            return;
+        }
+        if (editor.getLanguageForSelection().getId() !== "html") {
+            alert("Text selected is not html");
+            return;
+        }
         
         var newtext = text;
         var insertionPos = editor.getSelection().start;
         var endpos = editor.getSelection().end;
         
         //time to extract what we want from what was selected
-        var starttagpat = new RegExp("(.|\n)+?(?=<[^/>]+>)");
-        var endtagpat = new RegExp("(.|\n)+(?=<[^>]+>)");
+        var starttagpat = new RegExp("((<.*\/>)|(.|\n))*(?=<[^/>]+>)");
+        var endtagpat = new RegExp("(.|\n)*(?=</[^>]+>)");
         var beforefirsttag = "";
         
         beforefirsttag = starttagpat.exec(text);
         var firsttag = /<[^\/>]+>/.exec(text);
         
         //testing
+        //alert("beforefirsttag is: " + beforefirsttag);
         //alert("first tag is: " + firsttag);
         
-        if (firsttag === null) { return; }
+        if (firsttag === null) {
+            alert("Selection does not contain an opening tag");
+            return;
+        }
         if (beforefirsttag !== null) {
             beforefirsttag = beforefirsttag[0];
             newtext = newtext.substring(beforefirsttag.length);
@@ -44,7 +55,10 @@ define(function (require, exports, module) {
         
         var beforelasttag = endtagpat.exec(newtext);
         var lasttag = /<\/[^>]+>/.exec(newtext);
-        if (lasttag === null) { return; }
+        if (lasttag === null) {
+            alert("Selection does not contain a closing tag");
+            return;
+        }
         lasttag = lasttag[0];
         if (beforelasttag === null) {
             beforelasttag = "";
