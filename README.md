@@ -1,7 +1,7 @@
 # tagdeletion
 Brackets extension for removing the outermost pair of html tags in a selection.
 
-Designed to remove the first opening tag and last closing tag in a selection of text.
+Designed to remove the first opening tag and last closing tag in a selection of text. Tags don't need to match to be removed. Self-closed tags (like `<br/>`) are ignored. Comments are also ignored.
 
 ####How to Use:
 
@@ -15,7 +15,7 @@ Designed to remove the first opening tag and last closing tag in a selection of 
     
     c) Use keyboard shortcut Ctrl+` (That's the "back quote" or "grave accent")
     
-    **Note: Ctrl is automatically converted to command for Mac users.**
+    **Mac users: Use command+` instead.**
 
 ####Known Bugs:
-- Behaves erratically when selecting multiple lines of text (Currently working to fix this)
+- Behaves erratically when selecting multiple lines of text (Most recent version should have fixed this once and for all, please let me know if something weird still happens)

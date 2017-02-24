@@ -26,12 +26,12 @@ define(function (require, exports, module) {
         var endpos = editor.getSelection().end;
         
         //time to extract what we want from what was selected
-        var starttagpat = new RegExp("((<.*\/>)|(.|\n))*(?=<[^/>]+>)");
         var endtagpat = new RegExp("(.|\n)*(?=</[^>]+>)");
         var beforefirsttag = "";
         
-        beforefirsttag = starttagpat.exec(text);
-        var firsttag = /<[^\/>]+>/.exec(text);
+        var firsttag = /<(?!!|\/)[^>]*[^\/]>/.exec(text);
+        beforefirsttag = RegExp.leftContext;
+        //alert("left context of start tag: " + RegExp.leftContext);
         
         //testing
         //alert("beforefirsttag is: " + beforefirsttag);
@@ -42,7 +42,6 @@ define(function (require, exports, module) {
             return;
         }
         if (beforefirsttag !== null) {
-            beforefirsttag = beforefirsttag[0];
             newtext = newtext.substring(beforefirsttag.length);
         } else {
             beforefirsttag = "";
@@ -54,21 +53,30 @@ define(function (require, exports, module) {
         //alert("after first change: " + newtext);
         
         var beforelasttag = endtagpat.exec(newtext);
+        if (beforelasttag === null) {
+            beforelasttag = "";
+        } else {
+            beforelasttag = beforelasttag[0];
+        }
+        newtext = newtext.substring(beforelasttag.length);
+        
+        //test again!
+        //alert("beforelasttag was: " + beforelasttag);
+        //alert("newtext is now: " + newtext);
+        
         var lasttag = /<\/[^>]+>/.exec(newtext);
         if (lasttag === null) {
             alert("Selection does not contain a closing tag");
             return;
         }
         lasttag = lasttag[0];
-        if (beforelasttag === null) {
-            beforelasttag = "";
-        } else {
-            beforelasttag = beforelasttag[0];
-        }
-        var restoftext = "";
-        if (beforelasttag.length + lasttag.length < newtext.length) {
-            restoftext = newtext.substring(beforelasttag.length + lasttag.length);
-        }
+        newtext = newtext.substring(lasttag.length);
+        
+        //yet more test
+        //alert("lasttag: " + lasttag);
+        //alert("newtext is now: " + newtext);
+        
+        var restoftext = newtext;
         
         //test all the things!
         //alert("beforefirsttag: \n" + beforefirsttag);
