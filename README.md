@@ -3,6 +3,8 @@ Brackets extension for removing the outermost pair of html tags in a selection.
 
 Designed to remove the first opening tag and last closing tag in a selection of text. Tags don't need to match to be removed. Self-closed tags (like `<br/>`) are ignored. Comments are also ignored.
 
+Version 1.1.0 now applies tag removal to each selection in the document.
+
 ####How to Use:
 
 1. Select text so the opening and closing tag you want to remove are surrounded.
