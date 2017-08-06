@@ -3,7 +3,7 @@
     "title": "Tag Deletion",
     "description": "Adds a menu item and shortcut that removes the outermost pair of html tags from selected text, keeping the rest of the selection intact. Applies to multiple selections.",
     "homepage": "https://github.com/qtbeee/tagdeletion",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "author": "Kristy Brambila <qtbeeestmoi@gmail.com>",
     "keywords": ["tag", "tags", "html", ".html", "remove"],
     "engines.brackets": ">= 1.7",

@@ -13,7 +13,7 @@ define(function (require, exports, module) {
         var document = editor.document;
         var selections = editor.getSelections();
         var newsels = [];
-        var i, sel, text, newtext, lasttagregex;
+        var i, sel, selend, text, newtext, lasttagregex;
         var firsttag, beforefirsttag, beforelasttag, lasttag, restoftext;
         
         if (!editor.hasSelection()) {
@@ -64,15 +64,29 @@ define(function (require, exports, module) {
 
                 restoftext = newtext;
 
+                //here's the text with the desired tags removed
                 newtext = beforefirsttag + beforelasttag + restoftext;
+                
+                //time to adjust the end of the selection so
+                //it doesn't select too much afterwards
+                console.log("sel " + sel.start.line + "," + sel.start.ch + " " + sel.end.line + "," + sel.end.ch);
+                selend = {line: sel.end.line,
+                          ch: sel.end.ch
+                         };
+                selend = document.adjustPosForChange(selend, newtext.split("\n"), sel.start, sel.end);
+                console.log("selend " + selend.line + "," + selend.ch);
+                
+                //make the change
                 document.replaceRange(newtext, sel.start, sel.end);
 
-                newsels.push(sel);
+                //add adjusted selection range to the list
+                newsels.push({start: sel.start, end: selend});
                 
+                //update current selections
                 selections = editor.getSelections();
 
             }
-            //this is where I need to set the new selections
+            //reselect all the things, adjusted
             editor.setSelections(newsels);
         });
     }
