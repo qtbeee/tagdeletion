@@ -10,7 +10,9 @@ define(function (require, exports, module) {
 
     function handleTagRemoval() {
         var editor = EditorManager.getFocusedEditor();
+        var document = editor.document;
         var selections = editor.getSelections();
+        var newsels = [];
         var i, sel, text, newtext, lasttagregex;
         var firsttag, beforefirsttag, beforelasttag, lasttag, restoftext;
         
@@ -18,55 +20,61 @@ define(function (require, exports, module) {
             alert("No text selected");
             return;
         }
-        for (i = 0; i < selections.length; i++) {
-            sel = selections[i];
-            text = editor.document.getRange(sel.start, sel.end);
-            newtext = text;
-            //alert(text);
-            
-            firsttag = /<(?!!|\/)[^>]*[^\/]>/.exec(text);
-            beforefirsttag = RegExp.leftContext;
-            if (firsttag === null) {
-                //alert("Selection " + i + " does not contain an opening tag");
-                continue;
-            }
-            if (beforefirsttag !== null) {
-                newtext = newtext.substring(beforefirsttag.length);
-            } else {
-                beforefirsttag = "";
-            }
-            firsttag = firsttag[0];
-            newtext = newtext.substring(firsttag.length);
-            
-            //syntax highlighting failed this regex
-            lasttagregex = new RegExp("(.|\n)*(?=</[^>]+>)");
-            beforelasttag = lasttagregex.exec(newtext);
-            if (beforelasttag === null) {
-                beforelasttag = "";
-            } else {
-                beforelasttag = beforelasttag[0];
-            }
-            newtext = newtext.substring(beforelasttag.length);
-            
-            lasttag = /<\/[^>]+>/.exec(newtext);
-            if (lasttag === null) {
-                //alert("Selection " + i + " does not contain a closing tag");
-                continue;
-            }
-            lasttag = lasttag[0];
-            newtext = newtext.substring(lasttag.length);
-            
-            restoftext = newtext;
-            
-            newtext = beforefirsttag + beforelasttag + restoftext;
-            editor.document.replaceRange(newtext, sel.start, sel.end);
-            
-            //I assume here is where you do the thing that regets the selection?
-            
-            selections = editor.getSelections();
-                                
-        }
         
+        document.batchOperation(function () {
+            for (i = 0; i < selections.length; i++) {
+                sel = selections[i];
+                text = document.getRange(sel.start, sel.end);
+                newtext = text;
+                //alert(text);
+
+                firsttag = /<(?!!|\/)[^>]*[^\/]>/.exec(text);
+                beforefirsttag = RegExp.leftContext;
+                if (firsttag === null) {
+                    //alert("Selection " + i + " does not contain an opening tag");
+                    newsels.push(sel);
+                    continue;
+                }
+                if (beforefirsttag !== null) {
+                    newtext = newtext.substring(beforefirsttag.length);
+                } else {
+                    beforefirsttag = "";
+                }
+                firsttag = firsttag[0];
+                newtext = newtext.substring(firsttag.length);
+
+                //syntax highlighting failed this regex
+                lasttagregex = new RegExp("(.|\n)*(?=</[^>]+>)");
+                beforelasttag = lasttagregex.exec(newtext);
+                if (beforelasttag === null) {
+                    beforelasttag = "";
+                } else {
+                    beforelasttag = beforelasttag[0];
+                }
+                newtext = newtext.substring(beforelasttag.length);
+
+                lasttag = /<\/[^>]+>/.exec(newtext);
+                if (lasttag === null) {
+                    //alert("Selection " + i + " does not contain a closing tag");
+                    newsels.push(sel);
+                    continue;
+                }
+                lasttag = lasttag[0];
+                newtext = newtext.substring(lasttag.length);
+
+                restoftext = newtext;
+
+                newtext = beforefirsttag + beforelasttag + restoftext;
+                document.replaceRange(newtext, sel.start, sel.end);
+
+                newsels.push(sel);
+                
+                selections = editor.getSelections();
+
+            }
+            //this is where I need to set the new selections
+            editor.setSelections(newsels);
+        });
     }
 
 
